@@ -80,60 +80,99 @@ export default function Dashboard() {
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Header />
 
-      <main className="flex-1 container py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Claims Dashboard</h1>
-          <p className="text-muted-foreground">
+      <main className="flex-1 container py-6 md:py-8 px-4 md:px-6">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Claims Dashboard</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Monitor claim statuses, compliance metrics, and escalations in real-time.
           </p>
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 mb-6 md:mb-8">
           {metrics.map((metric) => (
-            <Card key={metric.title} className={`metric-card ${metric.alert ? "border-destructive/30" : ""}`}>
-              <div className="flex items-start justify-between mb-3">
-                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
+            <Card key={metric.title} className={`p-3 md:p-5 ${metric.alert ? "border-destructive/30" : ""}`}>
+              <div className="flex items-start justify-between mb-2 md:mb-3">
+                <div className={`h-8 w-8 md:h-10 md:w-10 rounded-lg flex items-center justify-center ${
                   metric.alert ? "bg-destructive/10" : "bg-primary/10"
                 }`}>
-                  <metric.icon className={`h-5 w-5 ${metric.alert ? "text-destructive" : "text-primary"}`} />
+                  <metric.icon className={`h-4 w-4 md:h-5 md:w-5 ${metric.alert ? "text-destructive" : "text-primary"}`} />
                 </div>
                 {metric.trend && (
-                  <span className={`text-xs font-medium flex items-center gap-0.5 ${
+                  <span className={`text-[10px] md:text-xs font-medium flex items-center gap-0.5 ${
                     metric.trendUp ? "text-success" : "text-destructive"
                   }`}>
-                    <ArrowUpRight className="h-3 w-3" />
+                    <ArrowUpRight className="h-2.5 w-2.5 md:h-3 md:w-3" />
                     {metric.trend}
                   </span>
                 )}
               </div>
-              <div className={`text-2xl font-bold ${metric.alert ? "text-destructive" : ""}`}>
+              <div className={`text-lg md:text-2xl font-bold ${metric.alert ? "text-destructive" : ""}`}>
                 {metric.value}
               </div>
-              <div className="text-sm text-muted-foreground">{metric.title}</div>
+              <div className="text-xs md:text-sm text-muted-foreground">{metric.title}</div>
               {metric.subtitle && (
-                <div className="text-xs text-muted-foreground/70 mt-1">{metric.subtitle}</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground/70 mt-0.5 md:mt-1 hidden sm:block">{metric.subtitle}</div>
               )}
             </Card>
           ))}
         </div>
 
         {/* Claims Table */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="section-title">Recent Claims</h2>
-            <Badge variant="outline">{claimsDatabase.length} claims</Badge>
+        <Card className="p-4 md:p-6">
+          <div className="flex items-center justify-between mb-4 md:mb-6">
+            <h2 className="text-lg md:text-2xl font-semibold">Recent Claims</h2>
+            <Badge variant="outline" className="text-xs">{claimsDatabase.length} claims</Badge>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {claimsDatabase.map((claim) => {
+              const status = statusConfig[claim.status];
+              const StatusIcon = status.icon;
+              const isOverdue = claim.daysOpen > 90;
+
+              return (
+                <div 
+                  key={claim.id} 
+                  className={`p-3 rounded-lg border ${isOverdue ? "bg-destructive/5 border-destructive/30" : "border-border"}`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <span className="font-mono text-sm font-medium">{claim.claimId}</span>
+                      <p className="text-sm text-muted-foreground">{claim.holderName}</p>
+                    </div>
+                    <span className={`status-badge ${status.class}`}>
+                      <StatusIcon className="h-3 w-3 mr-1" />
+                      {status.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="capitalize text-xs">
+                        {claim.type}
+                      </Badge>
+                      <span className={isOverdue ? "text-destructive font-medium" : "text-muted-foreground"}>
+                        {claim.daysOpen}d {isOverdue && "⚠️"}
+                      </span>
+                    </div>
+                    <span className="font-medium">₦{claim.amount.toLocaleString()}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto -mx-4 md:mx-0">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Claim ID</TableHead>
-                  <TableHead>Policy Holder</TableHead>
+                  <TableHead className="whitespace-nowrap">Claim ID</TableHead>
+                  <TableHead className="whitespace-nowrap">Policy Holder</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Amount</TableHead>
-                  <TableHead>Days Open</TableHead>
+                  <TableHead className="whitespace-nowrap">Days Open</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Agent</TableHead>
                 </TableRow>
@@ -186,16 +225,16 @@ export default function Dashboard() {
 
         {/* Compliance Warning */}
         {stats.exceeding90Days > 0 && (
-          <Card className="mt-6 p-6 border-destructive/30 bg-destructive/5">
-            <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-lg bg-destructive/10 flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="h-6 w-6 text-destructive" />
+          <Card className="mt-4 md:mt-6 p-4 md:p-6 border-destructive/30 bg-destructive/5">
+            <div className="flex flex-col sm:flex-row items-start gap-3 md:gap-4">
+              <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-destructive/10 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="h-5 w-5 md:h-6 md:w-6 text-destructive" />
               </div>
               <div>
-                <h3 className="font-semibold text-destructive mb-1">
+                <h3 className="font-semibold text-destructive mb-1 text-sm md:text-base">
                   Compliance Alert: {stats.exceeding90Days} Claims Exceeding 90-Day Limit
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Under Section 50 of the Insurance Act 2003, claims must be settled within 90 days. 
                   These claims may expose the company to regulatory penalties and customer complaints.
                 </p>

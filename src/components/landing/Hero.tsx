@@ -13,48 +13,49 @@ export function Hero() {
         }} />
       </div>
 
-      <div className="container relative py-20 md:py-28 lg:py-32">
-        <div className="max-w-3xl mx-auto text-center space-y-8">
+      <div className="container relative py-16 px-4 md:py-28 lg:py-32">
+        <div className="max-w-3xl mx-auto text-center space-y-6 md:space-y-8">
           {/* Trust Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-medium backdrop-blur-sm">
-            <Shield className="h-4 w-4 text-accent" />
-            <span>NAICOM Regulated • Insurance Act 2003 Compliant</span>
+          <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-white/10 border border-white/20 text-xs md:text-sm font-medium backdrop-blur-sm">
+            <Shield className="h-3.5 w-3.5 md:h-4 md:w-4 text-accent" />
+            <span className="hidden sm:inline">NAICOM Regulated • Insurance Act 2003 Compliant</span>
+            <span className="sm:hidden">NAICOM Regulated</span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
             Insurance clarity on{" "}
             <span className="text-accent">WhatsApp</span>.
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg lg:text-xl text-primary-foreground/80 max-w-2xl mx-auto leading-relaxed px-2">
             Check claims, understand coverage, and know your rights — instantly. 
             Your trusted AI assistant for Nigerian insurance, available 24/7.
           </p>
 
           {/* Feature Pills */}
-          <div className="flex flex-wrap justify-center gap-3 text-sm">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3 text-xs md:text-sm">
             {["Claim Status", "Legal Rights", "Document Requests", "Pidgin Support"].map((feature) => (
               <span
                 key={feature}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10"
+                className="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full bg-white/10 border border-white/10"
               >
-                <CheckCircle className="h-3.5 w-3.5 text-accent" />
+                <CheckCircle className="h-3 w-3 md:h-3.5 md:w-3.5 text-accent" />
                 {feature}
               </span>
             ))}
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center pt-2 md:pt-4 px-4">
             <Button
               asChild
               size="lg"
-              className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg group"
+              className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg group w-full sm:w-auto"
             >
               <Link to="/demo">
-                <MessageCircle className="mr-2 h-5 w-5" />
+                <MessageCircle className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                 View Live Demo
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -63,7 +64,7 @@ export function Hero() {
               asChild
               size="lg"
               variant="outline"
-              className="border-white/30 text-primary-foreground bg-white/10 hover:bg-white/20"
+              className="border-white/30 text-primary-foreground bg-white/10 hover:bg-white/20 w-full sm:w-auto"
             >
               <Link to="/dashboard">
                 Explore Dashboard
@@ -72,15 +73,15 @@ export function Hero() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 pt-12 max-w-lg mx-auto">
+          <div className="grid grid-cols-3 gap-4 md:gap-8 pt-8 md:pt-12 max-w-lg mx-auto">
             {[
               { value: "50K+", label: "Claims Processed" },
               { value: "< 24hrs", label: "Avg Response" },
               { value: "98%", label: "Resolution Rate" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-accent">{stat.value}</div>
-                <div className="text-sm text-primary-foreground/70">{stat.label}</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-accent">{stat.value}</div>
+                <div className="text-xs md:text-sm text-primary-foreground/70">{stat.label}</div>
               </div>
             ))}
           </div>
