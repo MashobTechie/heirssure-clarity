@@ -1,4 +1,4 @@
- import { motion, useInView } from "framer-motion";
+ import { motion, useInView, useScroll, useTransform } from "framer-motion";
  import { useRef } from "react";
  import { MessageCircle, Brain, FileText, CheckCircle } from "lucide-react";
  
@@ -33,15 +33,43 @@
    const ref = useRef<HTMLDivElement>(null);
    const isInView = useInView(ref, { once: true, amount: 0.2 });
  
+   const { scrollYProgress } = useScroll({
+     target: ref,
+     offset: ["start end", "end start"]
+   });
+ 
+   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+   const floatY = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"]);
+ 
    return (
      <motion.section
        ref={ref}
        initial={{ opacity: 0, y: 100 }}
        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
        transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
-       className="py-20 md:py-28 bg-muted/30 min-h-screen flex items-center"
+       className="py-20 md:py-28 bg-muted/30 min-h-screen flex items-center relative overflow-hidden"
      >
-       <div className="container">
+       {/* Parallax background orbs */}
+       <motion.div
+         className="absolute inset-0 pointer-events-none"
+         style={{ y: backgroundY }}
+       >
+         <div className="absolute top-10 left-1/4 w-96 h-96 bg-primary/3 rounded-full blur-3xl" />
+         <div className="absolute bottom-20 right-1/4 w-72 h-72 bg-accent/5 rounded-full blur-3xl" />
+       </motion.div>
+ 
+       {/* Floating line elements */}
+       <motion.div
+         className="absolute inset-0 pointer-events-none"
+         style={{ y: floatY }}
+       >
+         <div className="absolute top-1/3 left-[5%] w-24 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent rotate-45" />
+         <div className="absolute bottom-1/4 right-[8%] w-32 h-[1px] bg-gradient-to-r from-transparent via-accent/20 to-transparent -rotate-12" />
+         <div className="absolute top-1/2 right-[3%] w-2 h-2 border border-primary/20 rotate-45" />
+         <div className="absolute bottom-1/2 left-[10%] w-3 h-3 rounded-full border border-accent/15" />
+       </motion.div>
+ 
+       <div className="container relative z-10">
          <motion.div
            initial={{ opacity: 0, y: 50 }}
            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}

@@ -1,12 +1,44 @@
  import { ArrowRight, MessageCircle, Shield, CheckCircle } from "lucide-react";
- import { motion } from "framer-motion";
+ import { motion, useScroll, useTransform } from "framer-motion";
+ import { useRef } from "react";
  import { Button } from "@/components/ui/button";
  import { Link } from "react-router-dom";
  
  export function Hero() {
+   const ref = useRef<HTMLElement>(null);
+   const { scrollYProgress } = useScroll({
+     target: ref,
+     offset: ["start start", "end start"]
+   });
+ 
+   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+   const opacityRange = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+ 
    return (
-     <section className="relative overflow-hidden bg-gradient-to-b from-primary via-primary to-primary/95 text-primary-foreground min-h-[100svh] flex flex-col justify-center">
-       {/* Background Pattern */}
+     <section ref={ref} className="relative overflow-hidden bg-gradient-to-b from-primary via-primary to-primary/95 text-primary-foreground min-h-[100svh] flex flex-col justify-center">
+       {/* Parallax Background Elements */}
+       <motion.div 
+         className="absolute inset-0 opacity-20"
+         style={{ y: backgroundY }}
+       >
+         <div className="absolute top-20 left-10 w-72 h-72 bg-accent/30 rounded-full blur-3xl" />
+         <div className="absolute top-40 right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+         <div className="absolute bottom-32 left-1/3 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
+       </motion.div>
+ 
+       {/* Floating geometric shapes */}
+       <motion.div
+         className="absolute inset-0 pointer-events-none"
+         style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "30%"]) }}
+       >
+         <div className="absolute top-1/4 left-[10%] w-4 h-4 rotate-45 border-2 border-white/20" />
+         <div className="absolute top-1/3 right-[15%] w-6 h-6 rounded-full border-2 border-accent/30" />
+         <div className="absolute bottom-1/3 left-[20%] w-3 h-3 bg-white/10 rotate-45" />
+         <div className="absolute top-1/2 right-[25%] w-8 h-8 rounded-full border border-white/10" />
+       </motion.div>
+ 
+       {/* Original gradient pattern */}
        <div className="absolute inset-0 opacity-10">
          <div className="absolute inset-0" style={{
            backgroundImage: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
@@ -14,7 +46,10 @@
          }} />
        </div>
  
-       <div className="container relative py-16 px-4 md:py-28 lg:py-32">
+       <motion.div 
+         className="container relative py-16 px-4 md:py-28 lg:py-32"
+         style={{ y: textY, opacity: opacityRange }}
+       >
          <div className="max-w-3xl mx-auto text-center space-y-6 md:space-y-8">
            {/* Trust Badge */}
            <motion.div
@@ -117,7 +152,7 @@
              ))}
            </motion.div>
          </div>
-       </div>
+       </motion.div>
  
        {/* Bottom Wave */}
        <div className="absolute bottom-0 left-0 right-0">
