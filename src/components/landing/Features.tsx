@@ -1,4 +1,4 @@
- import { motion, useInView } from "framer-motion";
+ import { motion, useInView, useScroll, useTransform } from "framer-motion";
  import { useRef } from "react";
  import { 
    MessageSquare, 
@@ -45,6 +45,14 @@
  export function Features() {
    const ref = useRef<HTMLDivElement>(null);
    const isInView = useInView(ref, { once: true, amount: 0.2 });
+   
+   const { scrollYProgress } = useScroll({
+     target: ref,
+     offset: ["start end", "end start"]
+   });
+ 
+   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+   const floatY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
  
    return (
      <motion.section
@@ -52,9 +60,29 @@
        initial={{ opacity: 0, y: 100 }}
        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
        transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
-       className="py-20 md:py-28 min-h-screen flex items-center"
+       className="py-20 md:py-28 min-h-screen flex items-center relative overflow-hidden"
      >
-       <div className="container">
+       {/* Parallax background elements */}
+       <motion.div
+         className="absolute inset-0 pointer-events-none"
+         style={{ y: backgroundY }}
+       >
+         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
+         <div className="absolute bottom-0 -left-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
+       </motion.div>
+ 
+       {/* Floating decorative elements */}
+       <motion.div
+         className="absolute inset-0 pointer-events-none"
+         style={{ y: floatY }}
+       >
+         <div className="absolute top-1/4 right-[5%] w-20 h-20 border border-primary/10 rounded-2xl rotate-12" />
+         <div className="absolute bottom-1/4 left-[8%] w-16 h-16 border border-accent/10 rounded-full" />
+         <div className="absolute top-1/2 left-[3%] w-3 h-3 bg-primary/20 rounded-full" />
+         <div className="absolute bottom-1/3 right-[10%] w-4 h-4 bg-accent/20 rotate-45" />
+       </motion.div>
+ 
+       <div className="container relative z-10">
          <motion.div
            initial={{ opacity: 0, y: 50 }}
            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}

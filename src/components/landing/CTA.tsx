@@ -1,4 +1,4 @@
- import { motion, useInView } from "framer-motion";
+ import { motion, useInView, useScroll, useTransform } from "framer-motion";
  import { useRef } from "react";
  import { ArrowRight, MessageCircle } from "lucide-react";
  import { Button } from "@/components/ui/button";
@@ -8,26 +8,47 @@
    const ref = useRef<HTMLDivElement>(null);
    const isInView = useInView(ref, { once: true, amount: 0.3 });
  
+   const { scrollYProgress } = useScroll({
+     target: ref,
+     offset: ["start end", "end start"]
+   });
+ 
+   const orbY = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
+   const orbScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.9]);
+ 
    return (
      <motion.section
        ref={ref}
        initial={{ opacity: 0, y: 100 }}
        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
        transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
-       className="py-20 md:py-28 min-h-[80vh] flex items-center"
+       className="py-20 md:py-28 min-h-[80vh] flex items-center relative overflow-hidden"
      >
-       <div className="container">
+       {/* Outer parallax decorations */}
+       <motion.div
+         className="absolute inset-0 pointer-events-none"
+         style={{ y: orbY }}
+       >
+         <div className="absolute top-20 left-[10%] w-40 h-40 bg-primary/5 rounded-full blur-2xl" />
+         <div className="absolute bottom-10 right-[15%] w-32 h-32 bg-accent/10 rounded-full blur-2xl" />
+       </motion.div>
+ 
+       <div className="container relative z-10">
          <motion.div
            initial={{ opacity: 0, scale: 0.95 }}
            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
            transition={{ duration: 0.6, delay: 0.2 }}
            className="relative overflow-hidden rounded-2xl bg-primary p-10 md:p-16 text-center"
          >
-           {/* Background decoration */}
-           <div className="absolute inset-0 opacity-10">
+           {/* Parallax background decoration inside card */}
+           <motion.div 
+             className="absolute inset-0 opacity-15"
+             style={{ y: orbY, scale: orbScale }}
+           >
              <div className="absolute top-0 right-0 w-96 h-96 bg-accent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
              <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-           </div>
+             <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-accent/50 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+           </motion.div>
  
            <motion.div
              initial={{ opacity: 0, y: 30 }}
