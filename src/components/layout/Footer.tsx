@@ -12,7 +12,7 @@ export function Footer() {
                 <Shield className="h-4 w-4 md:h-5 md:w-5 text-primary-foreground" />
               </div>
               <span className="text-lg md:text-xl font-bold tracking-tight">
-                Heirs<span className="text-accent">Sure</span>
+                Heirs<span className="text-primary">Sure</span>
               </span>
             </Link>
             <p className="text-xs md:text-sm text-muted-foreground max-w-xs">
@@ -23,18 +23,18 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-3 md:mb-4 text-sm md:text-base">Product</h4>
             <ul className="space-y-2 md:space-y-2.5 text-xs md:text-sm text-muted-foreground">
-              <li><Link to="/demo" className="hover:text-foreground transition-colors">Live Demo</Link></li>
-              <li><Link to="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link></li>
-              <li><Link to="/legal" className="hover:text-foreground transition-colors">Legal Reference</Link></li>
+              <li><Link to="/demo" className="hover:text-primary transition-colors">Live Demo</Link></li>
+              <li><Link to="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
+              <li><Link to="/legal" className="hover:text-primary transition-colors">Legal Reference</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold mb-3 md:mb-4 text-sm md:text-base">Legal</h4>
             <ul className="space-y-2 md:space-y-2.5 text-xs md:text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">NAICOM Guidelines</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">NAICOM Guidelines</a></li>
             </ul>
           </div>
 

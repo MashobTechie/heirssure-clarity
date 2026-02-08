@@ -22,7 +22,7 @@ export function Header() {
             <Shield className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="text-xl font-bold tracking-tight text-foreground">
-            Heirs<span className="text-accent">Sure</span>
+            Heirs<span className="text-primary">Sure</span>
           </span>
         </Link>
 

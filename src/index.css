@@ -3,37 +3,37 @@
 @tailwind utilities;
 
 /* HeirsSure Insurance Design System
-   Deep navy, warm gold, professional trust aesthetic
+   Clean white & bold red, modern trust aesthetic
    All colors in HSL
 */
 
 @layer base {
   :root {
-    /* Core palette - Deep Navy & Gold */
-    --background: 210 25% 98%;
-    --foreground: 215 35% 15%;
+    /* Core palette - White & Red */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 35% 15%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 35% 15%;
+    --popover-foreground: 0 0% 10%;
 
-    /* Primary: Deep Navy Blue */
-    --primary: 215 55% 22%;
+    /* Primary: Bold Red */
+    --primary: 0 78% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Lighter Navy */
-    --secondary: 215 40% 94%;
-    --secondary-foreground: 215 55% 22%;
+    /* Secondary: Soft rose tint */
+    --secondary: 0 30% 96%;
+    --secondary-foreground: 0 50% 35%;
 
     /* Muted surfaces */
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 20% 45%;
+    --muted: 0 10% 96%;
+    --muted-foreground: 0 5% 45%;
 
-    /* Accent: Warm Gold */
-    --accent: 42 85% 55%;
-    --accent-foreground: 215 55% 15%;
+    /* Accent: Deeper crimson */
+    --accent: 350 80% 45%;
+    --accent-foreground: 0 0% 100%;
 
     /* Status colors */
     --destructive: 0 72% 51%;
@@ -43,15 +43,15 @@
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
-    --warning-foreground: 215 55% 15%;
+    --warning-foreground: 0 0% 10%;
 
     --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
 
     /* UI elements */
-    --border: 214 25% 88%;
-    --input: 214 25% 88%;
-    --ring: 215 55% 22%;
+    --border: 0 10% 90%;
+    --input: 0 10% 90%;
+    --ring: 0 78% 50%;
 
     --radius: 0.625rem;
 
@@ -64,42 +64,42 @@
     --whatsapp-bubble-bot: 0 0% 100%;
 
     /* Sidebar */
-    --sidebar-background: 215 55% 22%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 42 85% 55%;
-    --sidebar-primary-foreground: 215 55% 15%;
-    --sidebar-accent: 215 45% 30%;
+    --sidebar-background: 0 78% 50%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 78% 50%;
+    --sidebar-accent: 0 65% 42%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 215 45% 28%;
-    --sidebar-ring: 42 85% 55%;
+    --sidebar-border: 0 60% 45%;
+    --sidebar-ring: 0 0% 100%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(215 55% 22%) 0%, hsl(215 45% 32%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(42 85% 55%) 0%, hsl(38 90% 50%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(210 25% 98%) 0%, hsl(210 20% 95%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(0 78% 50%) 0%, hsl(350 80% 45%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(0 78% 50%) 0%, hsl(350 85% 40%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 10% 97%) 100%);
   }
 
   .dark {
-    --background: 215 45% 8%;
-    --foreground: 210 20% 95%;
+    --background: 0 0% 6%;
+    --foreground: 0 0% 95%;
 
-    --card: 215 40% 12%;
-    --card-foreground: 210 20% 95%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 215 40% 12%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 42 85% 55%;
-    --primary-foreground: 215 55% 12%;
+    --primary: 0 78% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 35% 18%;
-    --secondary-foreground: 210 20% 95%;
+    --secondary: 0 20% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 215 30% 16%;
-    --muted-foreground: 215 15% 60%;
+    --muted: 0 10% 14%;
+    --muted-foreground: 0 5% 55%;
 
-    --accent: 42 75% 50%;
-    --accent-foreground: 215 55% 12%;
+    --accent: 350 70% 50%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 100%;
@@ -108,23 +108,23 @@
     --success-foreground: 0 0% 100%;
 
     --warning: 38 85% 55%;
-    --warning-foreground: 215 55% 12%;
+    --warning-foreground: 0 0% 10%;
 
     --info: 199 80% 55%;
     --info-foreground: 0 0% 100%;
 
-    --border: 215 30% 20%;
-    --input: 215 30% 20%;
-    --ring: 42 85% 55%;
+    --border: 0 10% 18%;
+    --input: 0 10% 18%;
+    --ring: 0 78% 55%;
 
-    --sidebar-background: 215 50% 10%;
+    --sidebar-background: 0 60% 12%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 42 85% 55%;
-    --sidebar-primary-foreground: 215 55% 12%;
-    --sidebar-accent: 215 40% 16%;
+    --sidebar-primary: 0 78% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 40% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 215 35% 18%;
-    --sidebar-ring: 42 85% 55%;
+    --sidebar-border: 0 30% 16%;
+    --sidebar-ring: 0 78% 55%;
   }
 }
 
@@ -193,6 +193,6 @@
   }
 
   .legal-highlight {
-    @apply bg-accent/15 border-l-4 border-accent px-4 py-3 rounded-r-lg;
+    @apply bg-primary/10 border-l-4 border-primary px-4 py-3 rounded-r-lg;
   }
 }
