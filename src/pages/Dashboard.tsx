@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { claimsDatabase, getClaimStats } from "@/data/claims";
+import { useClaimsStore } from "@/context/ClaimsContext";
 import { 
   FileText, 
   Clock, 
@@ -9,7 +10,8 @@ import {
   XCircle,
   TrendingUp,
   Users,
-  ArrowUpRight
+  ArrowUpRight,
+  ShieldAlert
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +34,7 @@ const statusConfig: Record<string, { icon: React.ElementType; class: string; lab
 
 export default function Dashboard() {
   const stats = getClaimStats();
+  const { lastQueriedClaimId, escalationsToday } = useClaimsStore();
 
   const metrics = [
     {
@@ -55,11 +58,11 @@ export default function Dashboard() {
       subtitle: "Compliance risk",
     },
     {
-      title: "Escalations",
-      value: stats.escalated,
+      title: "Escalations Today",
+      value: escalationsToday,
       icon: Users,
-      alert: stats.escalated > 0,
-      subtitle: "Requires attention",
+      alert: escalationsToday > 0,
+      subtitle: escalationsToday > 0 ? "From chat interactions" : "No escalations yet",
     },
     {
       title: "Total Value",
@@ -131,15 +134,29 @@ export default function Dashboard() {
               const status = statusConfig[claim.status];
               const StatusIcon = status.icon;
               const isOverdue = claim.daysOpen > 90;
+              const isHighlighted = lastQueriedClaimId === claim.claimId;
 
               return (
                 <div 
                   key={claim.id} 
-                  className={`p-3 rounded-lg border ${isOverdue ? "bg-destructive/5 border-destructive/30" : "border-border"}`}
+                  className={`p-3 rounded-lg border transition-all duration-500 ${
+                    isHighlighted 
+                      ? "ring-2 ring-primary border-primary bg-primary/5 shadow-md" 
+                      : isOverdue 
+                        ? "bg-destructive/5 border-destructive/30" 
+                        : "border-border"
+                  }`}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <span className="font-mono text-sm font-medium">{claim.claimId}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-sm font-medium">{claim.claimId}</span>
+                        {isHighlighted && (
+                          <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0">
+                            Queried
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-sm text-muted-foreground">{claim.holderName}</p>
                     </div>
                     <span className={`status-badge ${status.class}`}>
@@ -152,6 +169,12 @@ export default function Dashboard() {
                       <Badge variant="secondary" className="capitalize text-xs">
                         {claim.type}
                       </Badge>
+                      {isOverdue && (
+                        <Badge className="bg-destructive/10 text-destructive text-[10px] gap-1 border-destructive/30" variant="outline">
+                          <ShieldAlert className="h-3 w-3" />
+                          Compliance Risk
+                        </Badge>
+                      )}
                       <span className={isOverdue ? "text-destructive font-medium" : "text-muted-foreground"}>
                         {claim.daysOpen}d {isOverdue && "⚠️"}
                       </span>
@@ -173,6 +196,7 @@ export default function Dashboard() {
                   <TableHead>Type</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead className="whitespace-nowrap">Days Open</TableHead>
+                  <TableHead>Compliance</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Agent</TableHead>
                 </TableRow>
@@ -182,14 +206,28 @@ export default function Dashboard() {
                   const status = statusConfig[claim.status];
                   const StatusIcon = status.icon;
                   const isOverdue = claim.daysOpen > 90;
+                  const isHighlighted = lastQueriedClaimId === claim.claimId;
 
                   return (
                     <TableRow 
                       key={claim.id} 
-                      className={isOverdue ? "bg-destructive/5" : ""}
+                      className={`transition-all duration-500 ${
+                        isHighlighted 
+                          ? "ring-2 ring-primary bg-primary/5 shadow-sm" 
+                          : isOverdue 
+                            ? "bg-destructive/5" 
+                            : ""
+                      }`}
                     >
                       <TableCell className="font-mono text-sm font-medium">
-                        {claim.claimId}
+                        <div className="flex items-center gap-2">
+                          {claim.claimId}
+                          {isHighlighted && (
+                            <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0 animate-pulse">
+                              Queried
+                            </Badge>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>{claim.holderName}</TableCell>
                       <TableCell>
@@ -205,6 +243,16 @@ export default function Dashboard() {
                           {claim.daysOpen} days
                           {isOverdue && " ⚠️"}
                         </span>
+                      </TableCell>
+                      <TableCell>
+                        {isOverdue ? (
+                          <Badge className="bg-destructive/10 text-destructive text-xs gap-1 border-destructive/30" variant="outline">
+                            <ShieldAlert className="h-3 w-3" />
+                            Compliance Risk
+                          </Badge>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">OK</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <span className={`status-badge ${status.class}`}>

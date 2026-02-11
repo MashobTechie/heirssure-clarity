@@ -5,9 +5,21 @@ import { WhatsAppChat } from "@/components/demo/WhatsAppChat";
 import { IntentPanel } from "@/components/demo/IntentPanel";
 import { ChatResponse } from "@/lib/chatEngine";
 import { Smartphone } from "lucide-react";
+import { useClaimsStore } from "@/context/ClaimsContext";
 
 export default function Demo() {
   const [lastResponse, setLastResponse] = useState<ChatResponse | null>(null);
+  const { queryClaim, incrementEscalations } = useClaimsStore();
+
+  const handleResponse = (response: ChatResponse) => {
+    setLastResponse(response);
+    if (response.claim) {
+      queryClaim(response.claim.claimId);
+    }
+    if (response.shouldEscalate) {
+      incrementEscalations();
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
@@ -30,7 +42,7 @@ export default function Demo() {
               <span className="text-sm font-medium text-muted-foreground">WhatsApp Simulator</span>
             </div>
             <div className="h-[450px] md:h-[500px] lg:h-[calc(100vh-320px)] lg:min-h-[500px]">
-              <WhatsAppChat onResponse={setLastResponse} />
+              <WhatsAppChat onResponse={handleResponse} />
             </div>
           </div>
 
