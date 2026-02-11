@@ -50,7 +50,7 @@ export function Footer() {
 
         <div className="mt-8 md:mt-10 pt-4 md:pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
           <p className="text-xs md:text-sm text-muted-foreground text-center md:text-left">
-            © 2024 HeirsSure. All rights reserved.
+            © 2026 HeirsSure. All rights reserved.
           </p>
           <p className="text-[10px] md:text-xs text-muted-foreground text-center md:text-right">
             Regulated by NAICOM. Licensed insurance intermediary.
