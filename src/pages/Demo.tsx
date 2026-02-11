@@ -1,19 +1,21 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppChat } from "@/components/demo/WhatsAppChat";
 import { IntentPanel } from "@/components/demo/IntentPanel";
 import { ChatResponse } from "@/lib/chatEngine";
-import { Smartphone } from "lucide-react";
+import { Smartphone, FileSearch, Scale, AlertTriangle } from "lucide-react";
 import { useClaimsStore } from "@/context/ClaimsContext";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export default function Demo() {
   const [lastResponse, setLastResponse] = useState<ChatResponse | null>(null);
   const [showReasoning, setShowReasoning] = useState(false);
   const { queryClaim, incrementEscalations } = useClaimsStore();
+  const chatRef = useRef<{ sendMessage: (text: string) => void }>(null);
 
   const handleResponse = (response: ChatResponse) => {
     setLastResponse(response);
@@ -23,6 +25,31 @@ export default function Demo() {
     if (response.shouldEscalate) {
       incrementEscalations();
     }
+  };
+
+  const presetMessages = [
+    {
+      icon: FileSearch,
+      label: "Check Claim Status",
+      message: "Check claim CLM-2024-003",
+      color: "bg-blue-50 hover:bg-blue-100 dark:bg-blue-950 dark:hover:bg-blue-900 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300",
+    },
+    {
+      icon: Scale,
+      label: "Ask Legal Questions",
+      message: "What are my rights if my claim is delayed?",
+      color: "bg-purple-50 hover:bg-purple-100 dark:bg-purple-950 dark:hover:bg-purple-900 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300",
+    },
+    {
+      icon: AlertTriangle,
+      label: "Trigger Escalation",
+      message: "I'm very frustrated with this process! This is ridiculous!",
+      color: "bg-destructive/10 hover:bg-destructive/20 border-destructive/30 text-destructive",
+    },
+  ];
+
+  const handlePresetClick = (message: string) => {
+    chatRef.current?.sendMessage(message);
   };
 
   return (
@@ -51,8 +78,31 @@ export default function Demo() {
               <Smartphone className="h-5 w-5 text-muted-foreground" />
               <span className="text-sm font-medium text-muted-foreground">WhatsApp Simulator</span>
             </div>
-            <div className="h-[450px] md:h-[500px] lg:h-[calc(100vh-320px)] lg:min-h-[500px]">
-              <WhatsAppChat onResponse={handleResponse} />
+
+            {/* Preset Buttons */}
+            <div className="mb-3 bg-card rounded-lg border border-border p-3">
+              <p className="text-xs font-medium text-muted-foreground mb-2">Quick Test Scenarios:</p>
+              <div className="flex flex-col gap-2">
+                {presetMessages.map((preset, index) => {
+                  const Icon = preset.icon;
+                  return (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePresetClick(preset.message)}
+                      className={`justify-start gap-2 h-auto py-2 ${preset.color}`}
+                    >
+                      <Icon className="h-4 w-4 flex-shrink-0" />
+                      <span className="text-xs font-medium">{preset.label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="h-[450px] md:h-[500px] lg:h-[calc(100vh-450px)] lg:min-h-[400px]">
+              <WhatsAppChat ref={chatRef} onResponse={handleResponse} />
             </div>
           </div>
 

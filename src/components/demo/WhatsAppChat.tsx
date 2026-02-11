@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { Send, Mic, Paperclip, MoreVertical, Phone, Video, Check, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,10 @@ interface WhatsAppChatProps {
   onResponse: (response: ChatResponse) => void;
 }
 
+export interface WhatsAppChatHandle {
+  sendMessage: (text: string) => void;
+}
+
 const initialMessages: Message[] = [
   {
     id: "1",
@@ -27,17 +31,17 @@ const initialMessages: Message[] = [
 ];
 
 const quickReplies = [
-  "Check claim CLM-2024-003",
+  "Check claim CLM-2024-001",
   "What are my rights?",
-  "Wetin be my entitlement?",
-  "I'm frustrated with my claim!",
+  "I need my policy certificate",
 ];
 
-export function WhatsAppChat({ onResponse }: WhatsAppChatProps) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [inputValue, setInputValue] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+export const WhatsAppChat = forwardRef<WhatsAppChatHandle, WhatsAppChatProps>(
+  ({ onResponse }, ref) => {
+    const [messages, setMessages] = useState<Message[]>(initialMessages);
+    const [inputValue, setInputValue] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -46,6 +50,13 @@ export function WhatsAppChat({ onResponse }: WhatsAppChatProps) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Expose sendMessage function to parent components
+  useImperativeHandle(ref, () => ({
+    sendMessage: (text: string) => {
+      handleSend(text);
+    },
+  }));
 
   const handleSend = async (text?: string) => {
     const messageText = text || inputValue.trim();
@@ -206,4 +217,6 @@ export function WhatsAppChat({ onResponse }: WhatsAppChatProps) {
       </div>
     </div>
   );
-}
+});
+
+WhatsAppChat.displayName = "WhatsAppChat";
