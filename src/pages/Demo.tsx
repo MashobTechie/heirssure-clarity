@@ -7,9 +7,12 @@ import { ChatResponse } from "@/lib/chatEngine";
 import { Smartphone } from "lucide-react";
 import { useClaimsStore } from "@/context/ClaimsContext";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function Demo() {
   const [lastResponse, setLastResponse] = useState<ChatResponse | null>(null);
+  const [showReasoning, setShowReasoning] = useState(false);
   const { queryClaim, incrementEscalations } = useClaimsStore();
 
   const handleResponse = (response: ChatResponse) => {
@@ -54,8 +57,26 @@ export default function Demo() {
           </div>
 
           {/* Analysis Panel */}
-          <div className="lg:col-span-3 bg-card rounded-lg border border-border p-4 md:p-6 min-h-[300px] lg:h-[calc(100vh-320px)] lg:min-h-[500px] overflow-y-auto">
-            <IntentPanel response={lastResponse} />
+          <div className="lg:col-span-3 flex flex-col gap-4">
+            {/* Under the Hood Toggle */}
+            <div className="bg-card rounded-lg border border-border p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="show-reasoning" className="text-sm font-medium cursor-pointer">
+                  Show AI Reasoning
+                </Label>
+                <Badge variant="outline" className="text-xs">Under the hood</Badge>
+              </div>
+              <Switch
+                id="show-reasoning"
+                checked={showReasoning}
+                onCheckedChange={setShowReasoning}
+              />
+            </div>
+
+            {/* Analysis Content */}
+            <div className="bg-card rounded-lg border border-border p-4 md:p-6 min-h-[300px] lg:h-[calc(100vh-400px)] lg:min-h-[450px] overflow-y-auto">
+              <IntentPanel response={lastResponse} showReasoning={showReasoning} />
+            </div>
           </div>
         </div>
 

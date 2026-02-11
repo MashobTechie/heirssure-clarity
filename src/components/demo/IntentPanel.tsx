@@ -1,10 +1,11 @@
-import { Brain, Database, FileText, AlertTriangle, BookOpen, Tag } from "lucide-react";
+import { Brain, Database, FileText, AlertTriangle, BookOpen, Tag, Zap, Eye } from "lucide-react";
 import { ChatResponse } from "@/lib/chatEngine";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 interface IntentPanelProps {
   response: ChatResponse | null;
+  showReasoning?: boolean;
 }
 
 const intentLabels: Record<string, { label: string; color: string }> = {
@@ -17,7 +18,7 @@ const intentLabels: Record<string, { label: string; color: string }> = {
   unknown: { label: "Unknown Intent", color: "bg-muted" },
 };
 
-export function IntentPanel({ response }: IntentPanelProps) {
+export function IntentPanel({ response, showReasoning = false }: IntentPanelProps) {
   if (!response) {
     return (
       <div className="h-full flex flex-col">
@@ -82,6 +83,36 @@ export function IntentPanel({ response }: IntentPanelProps) {
             <span className="text-muted-foreground">Language: </span>
             <span className="font-medium capitalize">{response.language}</span>
           </div>
+
+          {/* AI Reasoning Section */}
+          {showReasoning && response.reasoning && (
+            <div className="mt-4 pt-4 border-t border-border space-y-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Eye className="h-4 w-4 text-primary" />
+                <span className="text-xs font-semibold text-primary uppercase tracking-wide">AI Reasoning</span>
+              </div>
+
+              {/* Patterns Matched */}
+              <div className="space-y-1.5">
+                <span className="text-xs text-muted-foreground font-medium">Patterns Matched:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {response.reasoning.patternsMatched.map((pattern, idx) => (
+                    <Badge key={idx} variant="outline" className="text-xs bg-primary/5 border-primary/20">
+                      {pattern}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Data Source */}
+              <div className="space-y-1.5">
+                <span className="text-xs text-muted-foreground font-medium">Data Source:</span>
+                <p className="text-xs bg-muted/50 rounded px-2 py-1.5 font-mono">
+                  {response.reasoning.dataSource}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </Card>
 
@@ -179,6 +210,26 @@ export function IntentPanel({ response }: IntentPanelProps) {
             Negative sentiment detected. This conversation has been flagged for human review.
             A senior claims specialist will be notified within 24 hours.
           </p>
+
+          {/* Escalation Logic Reasoning */}
+          {showReasoning && response.reasoning?.escalationTriggers && (
+            <div className="mt-3 pt-3 border-t border-destructive/20">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="h-4 w-4 text-destructive" />
+                <span className="text-xs font-semibold text-destructive uppercase tracking-wide">Escalation Logic</span>
+              </div>
+              <div className="space-y-1.5">
+                <span className="text-xs text-muted-foreground font-medium">Triggers Detected:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {response.reasoning.escalationTriggers.map((trigger, idx) => (
+                    <Badge key={idx} variant="outline" className="text-xs bg-destructive/10 text-destructive border-destructive/30">
+                      {trigger}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </Card>
       )}
 

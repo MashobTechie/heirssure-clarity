@@ -27,6 +27,11 @@ export interface ChatResponse {
   legalSource?: string;
   shouldEscalate: boolean;
   language: "english" | "pidgin";
+  reasoning?: {
+    patternsMatched: string[];
+    dataSource: string;
+    escalationTriggers?: string[];
+  };
 }
 
 const pidginPatterns = [
@@ -40,52 +45,83 @@ function detectLanguage(message: string): "english" | "pidgin" {
   return pidginCount >= 2 ? "pidgin" : "english";
 }
 
-function detectIntent(message: string): ChatIntent {
+function detectIntent(message: string): ChatIntent & { patternsMatched?: string[] } {
   const lowerMessage = message.toLowerCase();
-  
+
   // Claim ID pattern
   const claimIdMatch = message.match(/CLM-\d{4}-\d{3}/i);
-  
+
   // Greeting patterns
   if (/^(hi|hello|hey|good morning|good afternoon|good evening|how far)/i.test(lowerMessage)) {
-    return { type: "greeting", confidence: 0.95, entities: {} };
-  }
-  
-  // Claim status patterns
-  if (/(status|check|where|tracking|how far|wetin happen|update).*(claim|CLM)/i.test(lowerMessage) || 
-      claimIdMatch) {
-    return { 
-      type: "claim_status", 
-      confidence: 0.9, 
-      entities: { claimId: claimIdMatch?.[0] } 
+    return {
+      type: "greeting",
+      confidence: 0.95,
+      entities: {},
+      patternsMatched: ["greeting words (hi, hello, hey)"]
     };
   }
-  
+
+  // Claim status patterns
+  if (/(status|check|where|tracking|how far|wetin happen|update).*(claim|CLM)/i.test(lowerMessage) ||
+      claimIdMatch) {
+    const patterns = [];
+    if (claimIdMatch) patterns.push(`claim ID format (${claimIdMatch[0]})`);
+    if (/(status|check|where|tracking)/i.test(lowerMessage)) patterns.push("status inquiry keywords");
+    return {
+      type: "claim_status",
+      confidence: 0.9,
+      entities: { claimId: claimIdMatch?.[0] },
+      patternsMatched: patterns
+    };
+  }
+
   // Legal/rights patterns
   if (/(rights?|law|legal|insurance act|naicom|section|entitled|policy|fair)/i.test(lowerMessage)) {
-    return { 
-      type: "legal_check", 
-      confidence: 0.85, 
-      entities: { topic: extractLegalTopic(lowerMessage) } 
+    return {
+      type: "legal_check",
+      confidence: 0.85,
+      entities: { topic: extractLegalTopic(lowerMessage) },
+      patternsMatched: ["legal/rights keywords", "compliance terms"]
     };
   }
-  
+
   // Document request patterns
   if (/(document|certificate|receipt|copy|proof|paper|letter)/i.test(lowerMessage)) {
-    return { type: "document_request", confidence: 0.8, entities: {} };
+    return {
+      type: "document_request",
+      confidence: 0.8,
+      entities: {},
+      patternsMatched: ["document request keywords"]
+    };
   }
-  
+
   // Rights inquiry
   if (/(what|how).*(rights?|entitled|supposed|should)/i.test(lowerMessage)) {
-    return { type: "rights_inquiry", confidence: 0.8, entities: {} };
+    return {
+      type: "rights_inquiry",
+      confidence: 0.8,
+      entities: {},
+      patternsMatched: ["question words + rights terms"]
+    };
   }
-  
+
   // Escalation triggers (angry sentiment)
   if (/(angry|frustrated|ridiculous|nonsense|rubbish|tired|fed up|useless|complain|wahala|vex)/i.test(lowerMessage)) {
-    return { type: "escalation", confidence: 0.9, entities: {} };
+    const triggers = [];
+    if (/angry|frustrated|vex/i.test(lowerMessage)) triggers.push("anger indicators");
+    if (/ridiculous|nonsense|rubbish|useless/i.test(lowerMessage)) triggers.push("negative sentiment");
+    if (/tired|fed up/i.test(lowerMessage)) triggers.push("frustration markers");
+    if (/complain|wahala/i.test(lowerMessage)) triggers.push("complaint language");
+
+    return {
+      type: "escalation",
+      confidence: 0.9,
+      entities: {},
+      patternsMatched: triggers
+    };
   }
-  
-  return { type: "unknown", confidence: 0.5, entities: {} };
+
+  return { type: "unknown", confidence: 0.5, entities: {}, patternsMatched: ["no clear pattern match"] };
 }
 
 function extractLegalTopic(message: string): string {
@@ -136,57 +172,68 @@ export function generateResponse(message: string): ChatResponse {
   const language = detectLanguage(message);
   const intent = detectIntent(message);
   const lang = responses[language];
-  
+
   let responseMessage = "";
   let claim: Claim | undefined;
   let legalRef: LegalSection | null = null;
   let shouldEscalate = false;
-  
+  let dataSource = "None";
+
   switch (intent.type) {
     case "greeting":
       responseMessage = lang.greeting;
+      dataSource = "Predefined response template";
       break;
-      
+
     case "claim_status":
       if (intent.entities.claimId) {
         claim = getClaimById(intent.entities.claimId);
         if (claim) {
           responseMessage = lang.claimFound(claim);
+          dataSource = "Claims database → claims.claimId lookup";
         } else {
           responseMessage = lang.claimNotFound;
+          dataSource = "Claims database (no match)";
         }
       } else {
         responseMessage = lang.noClaimId;
+        dataSource = "Predefined response template";
       }
       break;
-      
+
     case "legal_check":
       legalRef = getLegalReference(intent.entities.topic || "rights");
       if (legalRef && language === "english") {
         responseMessage = responses.english.legalReference(legalRef);
+        dataSource = "Legal documents database → topic mapping";
       } else {
         responseMessage = responses.english.rightsInquiry;
+        dataSource = "Predefined response template";
       }
       break;
-      
+
     case "document_request":
       responseMessage = responses.english.documentRequest;
+      dataSource = "Predefined response template";
       break;
-      
+
     case "escalation":
       responseMessage = lang.escalation;
       shouldEscalate = true;
+      dataSource = "Escalation workflow triggered";
       break;
-      
+
     case "rights_inquiry":
       responseMessage = responses.english.rightsInquiry;
       legalRef = getLegalReference("rights");
+      dataSource = "Legal documents database → rights section";
       break;
-      
+
     default:
       responseMessage = lang.unknown;
+      dataSource = "Fallback response";
   }
-  
+
   // Find the source document name for the legal reference
   let legalSource: string | undefined;
   if (legalRef) {
@@ -206,5 +253,10 @@ export function generateResponse(message: string): ChatResponse {
     legalSource,
     shouldEscalate,
     language,
+    reasoning: {
+      patternsMatched: intent.patternsMatched || [],
+      dataSource,
+      escalationTriggers: shouldEscalate ? intent.patternsMatched : undefined,
+    },
   };
 }
