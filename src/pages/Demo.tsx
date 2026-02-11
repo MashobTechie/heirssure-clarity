@@ -6,6 +6,7 @@ import { IntentPanel } from "@/components/demo/IntentPanel";
 import { ChatResponse } from "@/lib/chatEngine";
 import { Smartphone } from "lucide-react";
 import { useClaimsStore } from "@/context/ClaimsContext";
+import { Badge } from "@/components/ui/badge";
 
 export default function Demo() {
   const [lastResponse, setLastResponse] = useState<ChatResponse | null>(null);
@@ -24,12 +25,18 @@ export default function Demo() {
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Header />
-      
+
       <main className="flex-1 container py-6 md:py-8">
+        <div className="flex justify-center mb-4">
+          <Badge variant="outline" className="text-xs md:text-sm px-3 md:px-4 py-1.5 bg-amber-50 dark:bg-amber-950 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300">
+            Demo Mode - Using Simulated Claims Data
+          </Badge>
+        </div>
+
         <div className="mb-6 md:mb-8">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Live WhatsApp Demo</h1>
           <p className="text-sm md:text-base text-muted-foreground">
-            Experience how HeirsSure assists Nigerian insurance customers. Try asking about claims, 
+            Experience how HeirsSure assists Nigerian insurance customers. Try asking about claims,
             rights, or use Pidgin!
           </p>
         </div>

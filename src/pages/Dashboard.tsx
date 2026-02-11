@@ -84,6 +84,12 @@ export default function Dashboard() {
       <Header />
 
       <main className="flex-1 container py-6 md:py-8 px-4 md:px-6">
+        <div className="flex justify-center mb-4">
+          <Badge variant="outline" className="text-xs md:text-sm px-3 md:px-4 py-1.5 bg-amber-50 dark:bg-amber-950 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300">
+            Demo Mode - Using Simulated Claims Data
+          </Badge>
+        </div>
+
         <div className="mb-6 md:mb-8">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Claims Dashboard</h1>
           <p className="text-sm md:text-base text-muted-foreground">
