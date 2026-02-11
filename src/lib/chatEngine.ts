@@ -1,5 +1,5 @@
 import { getClaimById, Claim } from "@/data/claims";
-import { getLegalReference, LegalSection } from "@/data/legalDocuments";
+import { getLegalReference, LegalSection, legalDocuments } from "@/data/legalDocuments";
 
 export type IntentType = 
   | "claim_status" 
@@ -24,6 +24,7 @@ export interface ChatResponse {
   intent: ChatIntent;
   claim?: Claim;
   legalRef?: LegalSection;
+  legalSource?: string;
   shouldEscalate: boolean;
   language: "english" | "pidgin";
 }
@@ -186,11 +187,23 @@ export function generateResponse(message: string): ChatResponse {
       responseMessage = lang.unknown;
   }
   
+  // Find the source document name for the legal reference
+  let legalSource: string | undefined;
+  if (legalRef) {
+    for (const doc of legalDocuments) {
+      if (doc.sections.some(s => s.id === legalRef!.id)) {
+        legalSource = `${doc.title} (${doc.year})`;
+        break;
+      }
+    }
+  }
+
   return {
     message: responseMessage,
     intent,
     claim,
     legalRef: legalRef || undefined,
+    legalSource,
     shouldEscalate,
     language,
   };

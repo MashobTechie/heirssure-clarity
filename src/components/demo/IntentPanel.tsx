@@ -1,4 +1,4 @@
-import { Brain, Database, FileText, AlertTriangle } from "lucide-react";
+import { Brain, Database, FileText, AlertTriangle, BookOpen, Tag } from "lucide-react";
 import { ChatResponse } from "@/lib/chatEngine";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +36,25 @@ export function IntentPanel({ response }: IntentPanelProps) {
 
   return (
     <div className="h-full flex flex-col gap-4 overflow-y-auto">
-      <h3 className="section-title">Analysis Panel</h3>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <h3 className="section-title">Analysis Panel</h3>
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Last Queried Claim Badge */}
+          {response.claim && (
+            <Badge className="bg-primary text-primary-foreground gap-1.5 px-3 py-1">
+              <Tag className="h-3 w-3" />
+              Last Queried: {response.claim.claimId}
+            </Badge>
+          )}
+          {/* Escalation State Badge */}
+          {response.shouldEscalate && (
+            <Badge className="bg-destructive text-destructive-foreground gap-1.5 px-3 py-1 animate-pulse">
+              <AlertTriangle className="h-3 w-3" />
+              ESCALATED
+            </Badge>
+          )}
+        </div>
+      </div>
 
       {/* Intent Detection */}
       <Card className="p-4">
@@ -106,15 +124,32 @@ export function IntentPanel({ response }: IntentPanelProps) {
 
       {/* Legal Reference */}
       {response.legalRef && (
-        <Card className="p-4">
+        <Card className="p-4 border-accent/30">
           <div className="flex items-center gap-2 mb-3">
             <FileText className="h-5 w-5 text-accent" />
             <h4 className="font-semibold">Legal Reference Used</h4>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
+            {/* Source & Section callouts */}
+            <div className="flex flex-col gap-2 p-3 bg-accent/5 rounded-lg border border-accent/20">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-accent" />
+                <span className="text-sm text-muted-foreground">Legal Source Used:</span>
+                <span className="text-sm font-semibold text-accent">
+                  {response.legalSource || "Insurance Act 2003"}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-accent" />
+                <span className="text-sm text-muted-foreground">Section:</span>
+                <Badge variant="outline" className="border-accent/40 text-accent font-semibold">
+                  {response.legalRef.number}
+                </Badge>
+              </div>
+            </div>
+
             <div className="text-sm">
-              <span className="font-medium text-accent">{response.legalRef.number}</span>
-              <span className="text-muted-foreground"> • {response.legalRef.title}</span>
+              <span className="font-medium">{response.legalRef.title}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4">
               "{response.legalRef.content}"
@@ -136,9 +171,13 @@ export function IntentPanel({ response }: IntentPanelProps) {
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="h-5 w-5 text-destructive" />
             <h4 className="font-semibold text-destructive">Escalation Triggered</h4>
+            <Badge className="bg-destructive text-destructive-foreground ml-auto text-xs">
+              ACTIVE
+            </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
             Negative sentiment detected. This conversation has been flagged for human review.
+            A senior claims specialist will be notified within 24 hours.
           </p>
         </Card>
       )}
