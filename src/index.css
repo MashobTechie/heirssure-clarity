@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 /* HeirsSure Insurance Design System
-   Clean white & bold red, modern trust aesthetic
+   Clean white & neutral gray base with crimson for alerts
    All colors in HSL
 */
 
 @layer base {
   :root {
-    /* Core palette - White & Red */
+    /* Core palette - White & Neutral Gray */
     --background: 0 0% 100%;
     --foreground: 0 0% 10%;
 
@@ -19,24 +19,24 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 10%;
 
-    /* Primary: Bold Red */
-    --primary: 0 78% 50%;
+    /* Primary: Neutral Gray */
+    --primary: 0 0% 20%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Soft rose tint */
-    --secondary: 0 30% 96%;
-    --secondary-foreground: 0 50% 35%;
+    /* Secondary: Light gray */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 25%;
 
     /* Muted surfaces */
-    --muted: 0 10% 96%;
-    --muted-foreground: 0 5% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Accent: Deeper crimson */
-    --accent: 350 80% 45%;
+    /* Accent: Medium gray */
+    --accent: 0 0% 35%;
     --accent-foreground: 0 0% 100%;
 
     /* Status colors */
-    --destructive: 0 72% 51%;
+    --destructive: 348 83% 47%;
     --destructive-foreground: 0 0% 100%;
 
     --success: 142 70% 40%;
@@ -49,9 +49,9 @@
     --info-foreground: 0 0% 100%;
 
     /* UI elements */
-    --border: 0 10% 90%;
-    --input: 0 10% 90%;
-    --ring: 0 78% 50%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 20%;
 
     --radius: 0.625rem;
 
@@ -64,19 +64,19 @@
     --whatsapp-bubble-bot: 0 0% 100%;
 
     /* Sidebar */
-    --sidebar-background: 0 78% 50%;
+    --sidebar-background: 0 0% 20%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 0 78% 50%;
-    --sidebar-accent: 0 65% 42%;
+    --sidebar-primary-foreground: 0 0% 20%;
+    --sidebar-accent: 0 0% 15%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 60% 45%;
+    --sidebar-border: 0 0% 25%;
     --sidebar-ring: 0 0% 100%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(0 78% 50%) 0%, hsl(350 80% 45%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(0 78% 50%) 0%, hsl(350 85% 40%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 10% 97%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 15%) 0%, hsl(0 0% 30%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(0 0% 20%) 0%, hsl(0 0% 35%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
   }
 
   .dark {
@@ -89,19 +89,19 @@
     --popover: 0 0% 10%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 0 78% 55%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 85%;
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 0 20% 15%;
+    --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 10% 14%;
-    --muted-foreground: 0 5% 55%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 55%;
 
-    --accent: 350 70% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 70%;
+    --accent-foreground: 0 0% 10%;
 
-    --destructive: 0 62% 45%;
+    --destructive: 348 80% 52%;
     --destructive-foreground: 0 0% 100%;
 
     --success: 142 60% 45%;
@@ -113,18 +113,18 @@
     --info: 199 80% 55%;
     --info-foreground: 0 0% 100%;
 
-    --border: 0 10% 18%;
-    --input: 0 10% 18%;
-    --ring: 0 78% 55%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 85%;
 
-    --sidebar-background: 0 60% 12%;
+    --sidebar-background: 0 0% 12%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 0 78% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 40% 18%;
+    --sidebar-primary: 0 0% 85%;
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 0 0% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 30% 16%;
-    --sidebar-ring: 0 78% 55%;
+    --sidebar-border: 0 0% 16%;
+    --sidebar-ring: 0 0% 85%;
   }
 }
 
@@ -165,7 +165,7 @@
   }
 
   .status-escalated {
-    @apply bg-info/10 text-info border border-info/20;
+    @apply bg-destructive/10 text-destructive border border-destructive/20;
   }
 
   .whatsapp-message {
